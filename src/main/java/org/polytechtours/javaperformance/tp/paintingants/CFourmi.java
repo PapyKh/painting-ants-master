@@ -76,15 +76,11 @@ public class CFourmi {
    */
   public synchronized void deplacer() {
     float tirage, prob1, prob2, prob3, total;
-    int[] dir = new int[3];
+    int[] dir = {0, 0, 0};
     int i, j;
     Color lCouleur;
 
     mNbDeplacements++;
-
-    dir[0] = 0;
-    dir[1] = 0;
-    dir[2] = 0;
 
     // le tableau dir contient 0 si la direction concernée ne contient pas la
     // couleur
@@ -92,9 +88,10 @@ public class CFourmi {
     i = modulo(x + CFourmi.mIncDirection[modulo(mDirection - mDecalDir, 8)][0], mPainting.getLargeur());
     j = modulo(y + CFourmi.mIncDirection[modulo(mDirection - mDecalDir, 8)][1], mPainting.getHauteur());
     if (mApplis.mBaseImage != null) {
+      
       lCouleur = new Color(mApplis.mBaseImage.getRGB(i, j));
     } else {
-      lCouleur = new Color(mPainting.getCouleur(i, j).getRGB());
+      lCouleur = mPainting.getCouleur(i, j);
     }
     if (testCouleur(lCouleur)) {
       dir[0] = 1;
@@ -105,7 +102,7 @@ public class CFourmi {
     if (mApplis.mBaseImage != null) {
       lCouleur = new Color(mApplis.mBaseImage.getRGB(i, j));
     } else {
-      lCouleur = new Color(mPainting.getCouleur(i, j).getRGB());
+      lCouleur = mPainting.getCouleur(i, j);
     }
     if (testCouleur(lCouleur)) {
       dir[1] = 1;
@@ -115,7 +112,7 @@ public class CFourmi {
     if (mApplis.mBaseImage != null) {
       lCouleur = new Color(mApplis.mBaseImage.getRGB(i, j));
     } else {
-      lCouleur = new Color(mPainting.getCouleur(i, j).getRGB());
+      lCouleur = mPainting.getCouleur(i, j);
     }
     if (testCouleur(lCouleur)) {
       dir[2] = 1;
@@ -126,7 +123,7 @@ public class CFourmi {
     tirage = GenerateurAleatoire.nextFloat();// Math.random();
 
     // la fourmi suit la couleur
-    if (((tirage <= mProba[3]) && ((dir[0] + dir[1] + dir[2]) > 0)) || ((dir[0] + dir[1] + dir[2]) == 3)) {
+    if ((tirage <= mProba[3]) && (dir[0] + dir[1] + dir[2]) > 0) {
       prob1 = (dir[0]) * mProba[0];
       prob2 = (dir[1]) * mProba[1];
       prob3 = (dir[2]) * mProba[2];

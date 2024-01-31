@@ -29,7 +29,7 @@ public class CColonie implements Runnable {
 
   @Override
   public void run() {
-    while (mContinue == true) {
+    while (mContinue) {
       if (!mApplis.getPause()) {
         for (int i = 0; i < mColonie.size(); i++) {
           mColonie.get(i).deplacer();

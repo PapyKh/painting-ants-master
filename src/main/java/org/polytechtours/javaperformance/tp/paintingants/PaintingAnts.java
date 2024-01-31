@@ -517,7 +517,7 @@ public class PaintingAnts extends java.applet.Applet implements Runnable {
     // Create the thread.
     mApplis = new Thread(this);
     // and let it start running
-    mApplis.setPriority(Thread.MIN_PRIORITY);
+    mApplis.setPriority(Thread.MAX_PRIORITY);
     mApplis.start();
   }
 
@@ -534,9 +534,11 @@ public class PaintingAnts extends java.applet.Applet implements Runnable {
 
     // On demande au Thread Colony de s'arreter et on attend qu'il s'arrete
     mColony.pleaseStop();
+    
     try {
       mThreadColony.join();
-    } catch (Exception e) {
+    } catch (InterruptedException e) {
+      e.printStackTrace();
     }
 
     mThreadColony = null;

@@ -8,29 +8,29 @@ import java.util.Random;
 public class CFourmi {
   // Tableau des incrémentations à effectuer sur la position des fourmis
   // en fonction de la direction du deplacement
-  static private int[][] mIncDirection = new int[8][2];
+  private final static int[][] mIncDirection = {{0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}};
   // le generateur aléatoire (Random est thread safe donc on la partage)
-  private static Random GenerateurAleatoire = new Random();
+  private final static Random GenerateurAleatoire = new Random();
   // couleur déposé par la fourmi
-  private Color mCouleurDeposee;
-  private float mLuminanceCouleurSuivie;
+  private final Color mCouleurDeposee;
+  private final float mLuminanceCouleurSuivie;
   // objet graphique sur lequel les fourmis peuvent peindre
-  private CPainting mPainting;
-  // Coordonées de la fourmi
+  private final CPainting mPainting;
+  // Coordonnées de la fourmi
   private int x, y;
   // Proba d'aller a gauche, en face, a droite, de suivre la couleur
-  private float[] mProba = new float[4];
+  private final float[] mProba = new float[4];
   // Numéro de la direction dans laquelle la fourmi regarde
   private int mDirection;
   // Taille de la trace de phéromones déposée par la fourmi
-  private int mTaille;
+  private final int mTaille;
   // Pas d'incrémentation des directions suivant le nombre de directions
-  // allouées à la fourmies
-  private int mDecalDir;
+  // allouées à la fourmis
+  private byte mDecalDir;
   // l'applet
-  private PaintingAnts mApplis;
+  private final PaintingAnts mApplis;
   // seuil de luminance pour la détection de la couleur recherchée
-  private float mSeuilLuminance;
+  private final float mSeuilLuminance;
   // nombre de déplacements de la fourmi
   private long mNbDeplacements;
 
@@ -41,8 +41,8 @@ public class CFourmi {
       int pTaille, float pSeuilLuminance, PaintingAnts pApplis) {
 
     mCouleurDeposee = pCouleurDeposee;
-    mLuminanceCouleurSuivie = 0.2426f * pCouleurDeposee.getRed() + 0.7152f * pCouleurDeposee.getGreen()
-        + 0.0722f * pCouleurDeposee.getBlue();
+    mLuminanceCouleurSuivie = 0.2126f * pCouleurSuivie.getRed() + 0.7152f * pCouleurSuivie.getGreen()
+        + 0.0722f * pCouleurSuivie.getBlue();
     mPainting = pPainting;
     mApplis = pApplis;
 
@@ -65,24 +65,6 @@ public class CFourmi {
     } else {
       mDecalDir = 1;
     }
-
-    // initialisation du tableau des directions
-    CFourmi.mIncDirection[0][0] = 0;
-    CFourmi.mIncDirection[0][1] = -1;
-    CFourmi.mIncDirection[1][0] = 1;
-    CFourmi.mIncDirection[1][1] = -1;
-    CFourmi.mIncDirection[2][0] = 1;
-    CFourmi.mIncDirection[2][1] = 0;
-    CFourmi.mIncDirection[3][0] = 1;
-    CFourmi.mIncDirection[3][1] = 1;
-    CFourmi.mIncDirection[4][0] = 0;
-    CFourmi.mIncDirection[4][1] = 1;
-    CFourmi.mIncDirection[5][0] = -1;
-    CFourmi.mIncDirection[5][1] = 1;
-    CFourmi.mIncDirection[6][0] = -1;
-    CFourmi.mIncDirection[6][1] = 0;
-    CFourmi.mIncDirection[7][0] = -1;
-    CFourmi.mIncDirection[7][1] = -1;
 
     mSeuilLuminance = pSeuilLuminance;
     mNbDeplacements = 0;
@@ -207,13 +189,13 @@ public class CFourmi {
    * Titre : modulo Description : Fcontion de modulo permettant au fourmi de
    * reapparaitre de l autre coté du Canvas lorsque qu'elle sorte de ce dernier
    *
-   * @param x
+   * @param val
    *          valeur
    *
    * @return int
    */
-  private int modulo(int x, int m) {
-    return (x + m) % m;
+  private int modulo(int val, int module) {
+    return (val + module) % module;
   }
 
   /*************************************************************************************************
@@ -222,18 +204,6 @@ public class CFourmi {
    *
    */
   private boolean testCouleur(Color pCouleur) {
-    boolean lReponse = false;
-    float lLuminance;
-
-    /* on calcule la luminance */
-    lLuminance = 0.2426f * pCouleur.getRed() + 0.7152f * pCouleur.getGreen() + 0.0722f * pCouleur.getBlue();
-
-    /* test */
-    if (Math.abs(mLuminanceCouleurSuivie - lLuminance) < mSeuilLuminance) {
-      lReponse = true;
-      // System.out.print(x);
-    }
-
-    return lReponse;
+    return Math.abs(mLuminanceCouleurSuivie - 0.2126f * pCouleur.getRed() + 0.7152f * pCouleur.getGreen() + 0.0722f * pCouleur.getBlue()) < mSeuilLuminance;
   }
 }

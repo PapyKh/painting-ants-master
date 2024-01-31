@@ -137,7 +137,9 @@ public class CPainting extends Canvas implements MouseListener {
     // initialisation de la matrice de convolution : lissage moyen sur 9
     // cases
     /*
-     * 1 2 1 2 4 2 1 2 1
+     * 1 2 1 
+     * 2 4 2 
+     * 1 2 1
      */
     CPainting.mMatriceConv9[0][0] = 1 / 16f;
     CPainting.mMatriceConv9[0][1] = 2 / 16f;
@@ -152,7 +154,11 @@ public class CPainting extends Canvas implements MouseListener {
     // initialisation de la matrice de convolution : lissage moyen sur 25
     // cases
     /*
-     * 1 1 2 1 1 1 2 3 2 1 2 3 4 3 2 1 2 3 2 1 1 1 2 1 1
+     * 1 1 2 1 1 
+     * 1 2 3 2 1 
+     * 2 3 4 3 2 
+     * 1 2 3 2 1 
+     * 1 1 2 1 1
      */
     CPainting.mMatriceConv25[0][0] = 1 / 44f;
     CPainting.mMatriceConv25[0][1] = 1 / 44f;
@@ -183,8 +189,13 @@ public class CPainting extends Canvas implements MouseListener {
     // initialisation de la matrice de convolution : lissage moyen sur 49
     // cases
     /*
-     * 1 1 2 2 2 1 1 1 2 3 4 3 2 1 2 3 4 5 4 3 2 2 4 5 8 5 4 2 2 3 4 5 4 3 2 1 2
-     * 3 4 3 2 1 1 1 2 2 2 1 1
+     * 1 1 2 2 2 1 1 
+     * 1 2 3 4 3 2 1 
+     * 2 3 4 5 4 3 2 
+     * 2 4 5 8 5 4 2 
+     * 2 3 4 5 4 3 2 
+     * 1 2 3 4 3 2 1 
+     * 1 1 2 2 2 1 1
      */
     CPainting.mMatriceConv49[0][0] = 1 / 128f;
     CPainting.mMatriceConv49[0][1] = 1 / 128f;

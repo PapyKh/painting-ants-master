@@ -13,9 +13,9 @@ import java.util.Vector;
 
 public class CColonie implements Runnable {
 
-  private Boolean mContinue = Boolean.TRUE;
-  private Vector<CFourmi> mColonie;
-  private PaintingAnts mApplis;
+  private boolean mContinue = true;
+  private final Vector<CFourmi> mColonie;
+  private final PaintingAnts mApplis;
 
   /** Creates a new instance of CColonie */
   public CColonie(Vector<CFourmi> pColonie, PaintingAnts pApplis) {
@@ -29,20 +29,15 @@ public class CColonie implements Runnable {
 
   @Override
   public void run() {
-
-    while (mContinue == true) {
+    while (mContinue) {
       if (!mApplis.getPause()) {
-        for (int i = 0; i < mColonie.size(); i++) {
+        int i = 0;
+        int size = mColonie.size();
+        for (i = 0; i < size; i++) {
           mColonie.get(i).deplacer();
           mApplis.compteur();
         }
-      } else {
-        /*
-         * try { Thread.sleep(100); } catch (InterruptedException e) { break; }
-         */
-
       }
     }
   }
-
 }

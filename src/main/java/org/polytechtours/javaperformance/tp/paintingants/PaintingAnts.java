@@ -23,14 +23,14 @@ public class PaintingAnts extends java.applet.Applet implements Runnable {
   private CPainting mPainting;
 
   // les fourmis
-  private Vector<CFourmi> mColonie = new Vector<CFourmi>();
+  private final Vector<CFourmi> mColonie = new Vector<CFourmi>();
   private CColonie mColony;
 
   private Thread mApplis, mThreadColony;
 
   private Dimension mDimension;
   private long mCompteur = 0;
-  private Object mMutexCompteur = new Object();
+  private final Object mMutexCompteur = new Object();
   private boolean mPause = false;
 
   public BufferedImage mBaseImage;
@@ -59,8 +59,6 @@ public class PaintingAnts extends java.applet.Applet implements Runnable {
    */
   @Override
   public void destroy() {
-    // System.out.println(this.getName()+ ":destroy()");
-
     if (mApplis != null) {
       mApplis = null;
     }
@@ -149,19 +147,9 @@ public class PaintingAnts extends java.applet.Applet implements Runnable {
    */
   @Override
   public void paint(Graphics g) {
-
-    if (mBaseImage == null) {
-      return;
-    }
+    if (mBaseImage == null) { return; }
     g.drawImage(mBaseImage, 0, 0, this);
   }
-  /****************************************************************************/
-  /****************************************************************************/
-  /****************************************************************************/
-  /****************************************************************************/
-  /****************************************************************************/
-  /****************************************************************************/
-  /****************************************************************************/
 
   /****************************************************************************/
   /**
@@ -170,10 +158,6 @@ public class PaintingAnts extends java.applet.Applet implements Runnable {
    */
   public void pause() {
     mPause = !mPause;
-    // if (!mPause)
-    // {
-    // notify();
-    // }
   }
 
   // =========================================================================
@@ -238,7 +222,7 @@ public class PaintingAnts extends java.applet.Applet implements Runnable {
     CFourmi lFourmi;
     float lProbaTD, lProbaG, lProbaD, lProbaSuivre, lSeuilLuminance;
     char lTypeDeplacement = ' ';
-    int lInitDirection, lTaille;
+    byte lInitDirection, lTaille;
     float lInit_x, lInit_y;
     int lNbFourmis = -1;
 
@@ -252,7 +236,7 @@ public class PaintingAnts extends java.applet.Applet implements Runnable {
       lSeuilLuminance = readFloatParameter(lChaine);
     } else {
       // si seuil de luminance n'est pas défini
-      lSeuilLuminance = 40f;
+      lSeuilLuminance = 40.0f;
     }
     System.out.println("Seuil de luminance:" + lSeuilLuminance);
 
@@ -301,17 +285,17 @@ public class PaintingAnts extends java.applet.Applet implements Runnable {
         // chaine de parametres de couleur et proba
         StringTokenizer lSTParam = new StringTokenizer(lSTFourmi.nextToken(), "()");
         // lecture de la couleur déposée
-        StringTokenizer lSTCouleurDéposée = new StringTokenizer(lSTParam.nextToken(), ",");
-        R = readIntParameter(lSTCouleurDéposée.nextToken());
+        StringTokenizer lSTCouleurDeposee = new StringTokenizer(lSTParam.nextToken(), ",");
+        R = readIntParameter(lSTCouleurDeposee.nextToken());
         if (R == -1) {
           R = (int) (Math.random() * 256);
         }
 
-        G = readIntParameter(lSTCouleurDéposée.nextToken());
+        G = readIntParameter(lSTCouleurDeposee.nextToken());
         if (G == -1) {
           G = (int) (Math.random() * 256);
         }
-        B = readIntParameter(lSTCouleurDéposée.nextToken());
+        B = readIntParameter(lSTCouleurDeposee.nextToken());
         if (B == -1) {
           B = (int) (Math.random() * 256);
         }
@@ -337,13 +321,13 @@ public class PaintingAnts extends java.applet.Applet implements Runnable {
         if (lInit_y < 0.0 || lInit_y > 1.0) {
           lInit_y = (float) Math.random();
         }
-        lInitDirection = readIntParameter(lSTDéplacement.nextToken());
+        lInitDirection = (byte)readIntParameter(lSTDéplacement.nextToken());
         if (lInitDirection < 0 || lInitDirection > 7) {
-          lInitDirection = (int) (Math.random() * 8);
+          lInitDirection = (byte) (Math.random() * 8);
         }
-        lTaille = readIntParameter(lSTDéplacement.nextToken());
+        lTaille = (byte) readIntParameter(lSTDéplacement.nextToken());
         if (lTaille < 0 || lTaille > 3) {
-          lTaille = (int) (Math.random() * 4);
+          lTaille = (byte) (Math.random() * 4);
         }
         System.out.print("(" + lInit_x + "," + lInit_y + "," + lInitDirection + "," + lTaille + ")");
 
@@ -414,10 +398,10 @@ public class PaintingAnts extends java.applet.Applet implements Runnable {
         lInit_y = (float) (Math.random()); // *mPainting.getHauteur()
 
         // direction initiale
-        lInitDirection = (int) (Math.random() * 8);
+        lInitDirection = (byte) (Math.random() * 8);
 
         // taille du trait
-        lTaille = (int) (Math.random() * 4);
+        lTaille = (byte) (Math.random() * 4);
 
         // proba de déplacement :
         lProbaTD = (float) (Math.random());
@@ -453,36 +437,29 @@ public class PaintingAnts extends java.applet.Applet implements Runnable {
     // System.out.println(this.getName()+ ":run()");
 
     int i;
-    String lMessage;
+    StringBuilder lMessage;
 
     mPainting.init();
 
     Thread currentThread = Thread.currentThread();
 
-    /*
-     * for ( i=0 ; i<mColonie.size() ; i++ ) {
-     * ((CFourmi)mColonie.elementAt(i)).start(); }
-     */
-
     mThreadColony.start();
 
     while (mApplis == currentThread) {
       if (mPause) {
-        lMessage = "pause";
+        lMessage = new StringBuilder("pause");
       } else {
         synchronized (this) {
-          lMessage = "running (" + lastFps + ") ";
+          lMessage = new StringBuilder("running (" + lastFps + ") ");
         }
-
         synchronized (mMutexCompteur) {
           mCompteur %= 10000;
           for (i = 0; i < mCompteur / 1000; i++) {
-            lMessage += ".";
+            lMessage.append(".");
           }
         }
-
       }
-      showStatus(lMessage);
+      showStatus(lMessage.toString());
 
       try {
         Thread.sleep(10);
@@ -499,10 +476,9 @@ public class PaintingAnts extends java.applet.Applet implements Runnable {
    */
   @Override
   public void start() {
-    // System.out.println(this.getName()+ ":start()");
     mColony = new CColonie(mColonie, this);
     mThreadColony = new Thread(mColony);
-    mThreadColony.setPriority(Thread.MIN_PRIORITY);
+    mThreadColony.setPriority(Thread.MAX_PRIORITY);
 
     fpsTimer = new Timer(1000, new ActionListener() {
       @Override

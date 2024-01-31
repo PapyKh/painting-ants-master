@@ -195,15 +195,17 @@ public class CPainting extends Canvas implements MouseListener {
     int i, j, k, l, m, n;
     float R, G, B;
     Color lColor;
+    int paramTajine = 2 * pSize;
+    int paramTajine2 = paramTajine + 1;
     // produit de convolution discrete sur 9 cases
-    for (i = 0; i < pSize; i++) {
-      for (j = 0; j < pSize; j++) {
+    for (i = 0; i < paramTajine2; i++) {
+      for (j = 0; j < paramTajine2; j++) {
         R = G = B = 0f;
 
-        for (k = 0; k < pSize; k++) {
-          for (l = 0; l < pSize; l++) {
-            m = (x + i + k - (pSize - 1) + mDimension.width) % mDimension.width;
-            n = (y + j + l - (pSize - 1) + mDimension.height) % mDimension.height;
+        for (k = 0; k < paramTajine2; k++) {
+          for (l = 0; l < paramTajine2; l++) {
+            m = (x + i + k - paramTajine + mDimension.width) % mDimension.width;
+            n = (y + j + l - paramTajine + mDimension.height) % mDimension.height;
             R += pMatrice[k][l] * mCouleurs[m][n].getRed();
             G += pMatrice[k][l] * mCouleurs[m][n].getGreen();
             B += pMatrice[k][l] * mCouleurs[m][n].getBlue();
@@ -240,6 +242,9 @@ public class CPainting extends Canvas implements MouseListener {
 
       // on fait diffuser la couleur :
       switch (pTaille) {
+        case 0:
+          // on ne fait rien = pas de diffusion
+          break;
         case 1:
             paintColor(x, y, pTaille, mMatriceConv9);
           break;
@@ -249,9 +254,7 @@ public class CPainting extends Canvas implements MouseListener {
         case 3:
             paintColor(x, y, pTaille, mMatriceConv49);
           break;
-        default:
-          break;
-      }
+      }// end switch
     }
   }
 
